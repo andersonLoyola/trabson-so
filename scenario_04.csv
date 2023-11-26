@@ -1,0 +1,46 @@
+query,execution_time,query_type,query_description
+ccb1,151.0546875,ccb,QUERY QUE RETORNE O CÓDIGO IBGE E ID DA FAMILIA APENAS PARA FAMILIAR COM DATA DE ALTERAÇÃO DO ANO DE 2017 DE FORMA ORDENADA.
+ccb2,55.750732421875,ccb,Quantidade de domicilios sem banheiro
+ccb3,36.901611328125,ccb,Quantidade de familias que nao possuem domicilio particular regular
+ccb4,40.990478515625,ccb,Quais dados do domicílio das famílias que possuem apenas um cômodo?
+ccb5,167.806640625,ccb,FAMILIAs QUE TENHA MAIS DE 2 INTEGRANTES
+ccb6,3.745849609375,ccb,Quais municipios possuem uma população com número inferior à 1000 pessoas?
+ccb7,64.2119140625,ccb,Média de Idade das Pessoas nas Famílias da base de dados?
+ccb8,70.509765625,ccb,Qual a Idade média da população entrevistada?
+ccb9,29.001953125,ccb,Qual a Quantidade média de cômodos dos domicílios?
+ccb10,24.574951171875,ccb,Qual a média de cômodos por domicilio
+ccb11,1361.560302734375,ccb,Quantidade de pessoas por sexo na base de dados?
+ccb12,91.239013671875,ccb,Valor total da média familiar e total de pessoas por municipio
+ccb13,74.556640625,ccb,Quantidade de pessoas agrupadas por nível de escolaridade
+ccb14,41.924560546875,ccb,Pergunta 5: Quais são os tipos de materiais de piso mais comuns nas famílias?
+ccb15,89.5361328125,ccb,Agrupe a quantidade de pessoas pelas diferentes cores de pele.
+cci1,96.270751953125,cci,Quantos idosos existem em cada família no estado da Bahia?
+cci2,1074.21533203125,cci,Qtd de pessoas por Município e cor/raça
+cci3,90.42626953125,cci,Qual é a média de pessoas por família em cada município?
+cci4,771.811279296875,cci,"Quantidade de famílias com casas com menos de 3 cômodos agrupados por estado, regiao e municipio:"
+cci5,403.633544921875,cci,"Quantidade de pessoas por idade, sexo e função que recebem remunerção equivalente a salário mínimo ou inferior"
+cci6,398.148193359375,cci,Em que municípios moram as 5 pessoas mais velhas entrevistadas?
+cci7,113.718505859375,cci,"Quantidade de famílias com casas com menos de 3 cômodos agrupados por estado, regiao e municipio:"
+cci8,115.691650390625,cci,Quantas mulheres concluíram o ensino fundamental?
+cci9,750.011962890625,cci,"Quantas famílias existem em cada município, agrupadas por água canalizada ?"
+cci10,56.400390625,cci,Qual a media de pessoas por familia por municipio?
+cci11,262.793212890625,cci,Qual o curso mais elevado que as pessoas que não tiveram trabalho remunerado nos últimos 12 meses frequentaram?
+cci12,70.244873046875,cci,Quais são os cinco municípios com a maior população e quantas famílias vivem em cada um?
+cci13,47.9833984375,cci,Quantas famílias com mais de 3 pessoas têm acesso a água canalizada em seus domicílios?
+cci14,198.259033203125,cci,Quantas pessoas do sexo feminino moram em casas com água canalizada?
+cci15,74.293701171875,cci,"Qual a quantidade de pessoas do sexo masculino e feminino, respectivamente, em Salvador?"
+cca1,461.635009765625,cca,Quais são as três famílias com a maior renda média em cada município?
+cca2,213.93310546875,cca,Pergunta 1: Quais são os municípios na Região Nordeste com a menor média de idade entre as pessoas?
+cca3,238.799560546875,cca,Liste os nomes dos 10 municípios pela maior remuneração de trabalho para pessoas entre 25 e 35 anos.
+cca4,2829.395751953125,cca,"Qual a proporção de pessoas que utilizam abastecimento de água por poço ou nascente para todos os outros tipos e população total, além disso, e qual o tipo que predomina nas áreas urbanas?"
+cca5,181.883056640625,cca,Lista dos 30 município com o maior número de pessoas que nunca estudaram e têm 18 anos ou mais ordenados por quantidade:
+cca6,415.094482421875,cca,1 - Liste os nomes dos municípios onde a maioria dos residentes é do sexo feminino.
+cca7,571.78564453125,cca,RETORNA SEPARADAMENTE HOMENS E MULHERES QUE A FAMILIA TEM UMA REDA MÉDIA ACIMA DE 500 REAIS
+cca8,135.69580078125,cca,"Em quais estados os principais ganhos de renda dos membros vêm de doações e excedem R$ 20.000, e qual é o total de renda de doação nesses estados?"
+cca9,1109.224853515625,cca,Faixa etária com mais pessoas em cada município.
+cca10,651.926513671875,cca,"Qual a Renda média familiar, salário, idade e escolaridade das pessoas que são maiores do que 25 anos e ainda frequentam a escola ou nunca frequentaram?"
+cca11,168.8564453125,cca,Qual a média de pessoas que possuem coleta de lixo por região?
+cca12,407.09228515625,cca,Qual a média de renda das pessoas da familia por genero em cada estado?
+cca13,282.168212890625,cca,# Qual o curso mais elevado que as pessoas que não tiveram trabalho remunerado nos últimos 12 meses frequentaram? (ordenado por qauntidade de pessoas sem trabalho remunerado)
+cca14,2061.708251953125,cca,Quais são os três municípios com o maior número de pessoas trabalhando e a média de renda das famílias nesses municípios?
+cca15,94.496337890625,cca,"Pergunta 2: Qual é a renda média por família, considerando apenas as famílias com mais de 2 pessoas?"

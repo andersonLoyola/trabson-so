@@ -1,0 +1,38 @@
+version: '3'
+
+networks:
+  my-network:
+    driver: bridge
+services:
+  cluster-01:
+    image: bitnami/postgresql-repmgr:latest
+    container_name: cluster-01
+    ports:
+      - 5430:5432
+    volumes:
+      - ./pg_0_data:/bitnami/postgresql
+    env_file:
+      - ./config/cluster-01.config.env
+  cluster-02:
+    image: bitnami/postgresql-repmgr:latest
+    container_name: cluster-02
+    ports:
+      - 5431:5432
+    volumes:
+      - ./pg_1_data:/bitnami/postgresql
+    env_file:
+      - ./config/cluster-02.config.env
+  pgpool:
+    image: bitnami/pgpool:4
+    ports:
+      - 5432:5432
+    env_file:
+      - ./config/pgpool.config.env
+    depends_on:
+      - cluster-01
+      - cluster-02
+    healthcheck:
+      test: ["CMD", "/opt/bitnami/scripts/pgpool/healthcheck.sh"]
+      interval: 10s
+      timeout: 5s
+      retries: 5

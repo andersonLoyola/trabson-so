@@ -20,6 +20,9 @@ def load_schema(conn, schema_file):
 
 
 if __name__ == '__main__':
+    
+    load_dotenv(dotenv_path=get_full_path('../config/app-database.config.env'))
+    
     script_dir =  os.path.dirname(__file__)
     schema_tables_name = [
         'tb_domicilio.sql',
@@ -27,26 +30,46 @@ if __name__ == '__main__':
         'tb_mun.sql',
         'tb_pessoa.sql',
         'tb_trab.sql',
+        'tb_fam.sql',
     ]
-    load_dotenv(dotenv_path=get_full_path('../config/app-database.config.env'))
+
     db_host = os.getenv('APP_DB_HOST')
     db_user = os.getenv('APP_DB_USER')
     db_password = os.getenv('APP_DB_PASSWORD')
     db_name = os.getenv('APP_DB_NAME')
-    db_port = os.getenv('APP_DB_PORT')
+    pgpool_db_port = os.getenv('APP_PGPOOL_DB_PORT')
+    clusterless_db_port = os.getenv('APP_DB_CLUSTERLESS_PORT')
 
 
-    conn = psycopg2.connect(
+    clusterized_conn = psycopg2.connect(
         host=db_host,
         user=db_user,
         password=db_password,
         dbname=db_name,
-        port=db_port
+        port=pgpool_db_port
     )
-    print('loading tables ...')	
+    
+    clusterless_conn = psycopg2.connect(
+        host=db_host,
+        user=db_user,
+        password=db_password,
+        dbname=db_name,
+        port=clusterless_db_port
+    )
+
+    print('loading tables for clustered dbs ...')	
     for schema_file in schema_tables_name:
-        load_schema(conn, get_full_path('tables/' + schema_file))
+        load_schema(clusterized_conn, get_full_path('tables/' + schema_file))
     print('loading data ...')	
     for schema_file in schema_tables_name:
-        load_schema(conn, get_full_path('data/' + schema_file))
-    conn.close()
+        load_schema(clusterized_conn, get_full_path('data/' + schema_file))
+
+    print('loading tables for clusterless dbs ...')	
+    for schema_file in schema_tables_name:
+        load_schema(clusterless_conn, get_full_path('tables/' + schema_file))
+    print('loading data ...')	
+    for schema_file in schema_tables_name:
+        load_schema(clusterless_conn, get_full_path('data/' + schema_file))
+
+    clusterized_conn.close()
+    clusterless_conn.close()

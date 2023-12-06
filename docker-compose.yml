@@ -4,13 +4,28 @@ networks:
   my-network:
     driver: bridge
 services:
+  clusterless-pg:
+    image: bitnami/postgresql-repmgr:latest
+    container_name: clusterless-pg
+    ports:
+      - 5436:5432
+    volumes:
+      - ./clusterless_pg_data:/bitnami/postgresql
+    build: 
+      context: .
+      shm_size: '1gb'
+    env_file:
+      - ./config/cluster-01.config.env
   cluster-01:
     image: bitnami/postgresql-repmgr:latest
     container_name: cluster-01
     ports:
       - 5430:5432
     volumes:
-      - ./pg_0_data:/bitnami/postgresql
+      - ./cluster_01_data:/bitnami/postgresql
+    build: 
+      context: .
+      shm_size: '1gb'
     env_file:
       - ./config/cluster-01.config.env
   cluster-02:
@@ -19,11 +34,15 @@ services:
     ports:
       - 5431:5432
     volumes:
-      - ./pg_1_data:/bitnami/postgresql
+      - ./cluster_02_data:/bitnami/postgresql
+    build:
+      context: .
+      shm_size: '1gb'
     env_file:
       - ./config/cluster-02.config.env
   pgpool:
     image: bitnami/pgpool:4
+    container_name: pgpool
     ports:
       - 5432:5432
     env_file:
@@ -35,4 +54,4 @@ services:
       test: ["CMD", "/opt/bitnami/scripts/pgpool/healthcheck.sh"]
       interval: 10s
       timeout: 5s
-      retries: 5
+      retries: 10

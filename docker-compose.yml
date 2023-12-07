@@ -5,7 +5,7 @@ networks:
     driver: bridge
 services:
   clusterless-pg:
-    image: bitnami/postgresql-repmgr:latest
+    image: bitnami/postgresql:latest
     container_name: clusterless-pg
     ports:
       - 5436:5432

@@ -35,9 +35,9 @@ try:
     )
 
     # Execute the queries - clusterized databases
-    driver.execute(clusterized_conn)
+    driver.execute(clusterized_conn, 'clusterlized_query_times.csv')
     # Execute the queries - clusterized databases
-    driver.execute(clusterless_conn)
+    driver.execute(clusterless_conn, 'clusterless_query_times.csv')
 
     clusterized_conn.close()
     clusterless_conn.close()

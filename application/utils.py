@@ -35,10 +35,16 @@ def calculate_standard_deviation(results, average):
         sum += (result - average) ** 2
     return (sum / len(results)) ** 0.5
 
+def calculate_sample_variance(results, average):
+    sum = 0
+    for result in results:
+        sum += (result - average) ** 2
+    return sum / (len(results) - 1)
+
 
 def write_csv(results, filename = 'report'):
     with open(f'{filename}.csv', 'w', newline='') as csvfile:
-        fieldnames = ['description', 'average', 'standard_deviation', 'type']
+        fieldnames = ['description', 'average', 'standard_deviation', 'individual_results', 'min', 'max', 'type']
         writer = csv.DictWriter(csvfile, fieldnames=fieldnames)
         writer.writeheader()
         for result in results:

@@ -1,5 +1,5 @@
 import os
-import driver
+import use_cases
 import psycopg2
 from dotenv import load_dotenv
 
@@ -34,10 +34,19 @@ try:
         password=db_password
     )
 
-    # Execute the queries - clusterized databases
-    driver.execute(clusterized_conn, 'clusterlized_query_times.csv')
-    # Execute the queries - clusterized databases
-    driver.execute(clusterless_conn, 'clusterless_query_times.csv')
+    clusterized_conn.autocommit = True
+    clusterless_conn.autocommit = True
+
+    # Execute the use cases
+    use_cases.use_case_01.execute(clusterless_conn, clusterized_conn)
+    use_cases.use_case_02.execute(clusterless_conn, clusterized_conn)
+    use_cases.use_case_03.execute(clusterless_conn, clusterized_conn)
+    use_cases.use_case_04.execute(clusterless_conn, clusterized_conn)
+    use_cases.use_case_05.execute(clusterless_conn, clusterized_conn)
+    use_cases.use_case_06.execute(clusterless_conn, clusterized_conn)
+    use_cases.use_case_07.execute(clusterless_conn, clusterized_conn)
+    use_cases.use_case_08.execute(clusterless_conn, clusterized_conn)
+    
 
     clusterized_conn.close()
     clusterless_conn.close()

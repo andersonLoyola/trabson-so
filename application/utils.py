@@ -42,8 +42,8 @@ def calculate_sample_variance(results, average):
     return sum / (len(results) - 1)
 
 
-def write_csv(results, filename = 'report'):
-    with open(f'{filename}.csv', 'w', newline='') as csvfile:
+def write_csv(results, file_path = 'report'):
+    with open(file_path, 'w', newline='') as csvfile:
         fieldnames = ['description', 'average', 'standard_deviation', 'individual_results', 'min', 'max', 'type']
         writer = csv.DictWriter(csvfile, fieldnames=fieldnames)
         writer.writeheader()

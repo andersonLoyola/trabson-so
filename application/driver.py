@@ -1,24 +1,18 @@
 
 import utils
-import setup
-
 
 def execute(conn, report_file):
-    conn.autocommit = True
+    
     cursor = conn.cursor()
     partial_results = []
     final_result = []
     # Runnable queries
     queries = []
 
-    # Tune the database
-    #setup.tune(conn)
-    # Load the queries from the queries.sql file
     queries.extend(utils.load_queries(conn, 'ccb_queries.sql'))
     queries.extend(utils.load_queries(conn, 'cci_queries.sql'))
     # queries.extend(utils.load_queries(conn, 'cca_queries.sql'))
 
-    # Execute each  low complexity query and store the result
     for i, query in enumerate(queries, start=1): 
         for _ in range(0, 10):
             execution_time = utils.run_query(cursor, query['action'])
@@ -38,7 +32,6 @@ def execute(conn, report_file):
         partial_results = []
     
     utils.write_csv(final_result, report_file)
-    #setup.untune(conn)
     cursor.close()
     return final_result
 

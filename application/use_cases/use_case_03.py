@@ -1,7 +1,7 @@
 # Use case 02 - 
 import os
-import setup
-import driver
+from helpers import driver
+from helpers import setup
 
 
 def execute(conn, clusterized_conn):

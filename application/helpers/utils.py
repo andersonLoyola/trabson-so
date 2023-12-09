@@ -11,7 +11,7 @@ def run_query(cursor, query):
 
 def load_queries(query_type, filename =  'queries.sql'):
     queries = []
-    with open(os.path.join(os.path.dirname(__file__), filename), 'r') as queries_file:
+    with open(os.path.join(os.path.dirname(__file__), f'../queries/{filename}'), 'r') as queries_file:
         query_type = filename.replace('_queries.sql', '')
         for line in queries_file:
             if line.startswith('--'):
@@ -47,8 +47,6 @@ def write_csv(results, file_path = 'report'):
         fieldnames = ['description', 'average', 'standard_deviation', 'individual_results', 'min', 'max', 'type']
         writer = csv.DictWriter(csvfile, fieldnames=fieldnames)
         writer.writeheader()
-        for result in results:
-            writer.writerow(result)
-            print(f'{result["description"]}: {result["average"]} ms')
+        writer.writerows(results)
     print('Report generated successfully')
 

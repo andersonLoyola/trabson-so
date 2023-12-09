@@ -1,7 +1,7 @@
 # Use case 01 - no tunning and no indexess
 import os
-import driver
-import setup
+from helpers import driver
+from helpers import setup
 
 
 def execute(conn, clusterized_conn):

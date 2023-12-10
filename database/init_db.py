@@ -14,19 +14,23 @@ def load_schema(conn, schema_file):
     cursor.close()
     conn.commit()
 
-def database_exists(conn):
+def table_exists(conn, table_name):
     cursor = conn.cursor()
-    cursor.execute("SELECT 1 FROM pg_catalog.pg_database WHERE datname = %s", (os.getenv('APP_DB_NAME'),))
-    exists = cursor.fetchone()
+    cursor.execute(
+        "SELECT EXISTS (SELECT FROM information_schema.tables WHERE table_name = %s)", 
+        (table_name,)
+    )
+    exists = cursor.fetchone()[0]
     cursor.close()
     return exists
         
 def init_clustered_db(conn, schema_tables_name):
-    if (database_exists(conn)):
-        print('Database already exists - Skipping clustered db initialization.')
-        return
     print('loading tables for clustered dbs ...')	
     for schema_file in schema_tables_name:
+        table_name = schema_file.split('.')[0]
+        if (table_exists(conn, table_name)):
+            print(f'Table {table_name} already exists - Skipping clustered db initialization.')
+            continue
         load_schema(conn, get_full_path('tables/' + schema_file))
     print('loading data ...')	
     for schema_file in schema_tables_name:
@@ -34,11 +38,12 @@ def init_clustered_db(conn, schema_tables_name):
 
 
 def init_clusterless_db(conn, schema_tables_name):
-    if (database_exists(conn)):
-        print('Database already exists - Skipping clusterless db initialization')
-        return
     print('loading tables for clusterless dbs ...')	
     for schema_file in schema_tables_name:
+        table_name = schema_file.split('.')[0]
+        if (table_exists(conn, table_name)):
+            print(f'Table {table_name} already exists - Skipping clustered db initialization.')
+            continue
         load_schema(clusterless_conn, get_full_path('tables/' + schema_file))
     print('loading data ...')	
     for schema_file in schema_tables_name:
@@ -54,18 +59,19 @@ if __name__ == '__main__':
         'tb_mun.sql',
         'tb_pessoa.sql',
         'tb_trab.sql',
-        'tb_fam.sql',
+        'tb_familia.sql',
     ]
 
-    db_host = os.getenv('APP_DB_HOST')
+    clusterized_db_host = os.environ.get('APP_CLUSTERIZED_DB_HOST') or 'localhost'
+    clusterless_db_host = os.environ.get('APP_CLUSTERLESS_DB_HOST') or 'localhost'	
     db_user = os.getenv('APP_DB_USER')
     db_password = os.getenv('APP_DB_PASSWORD')
     db_name = os.getenv('APP_DB_NAME')
-    pgpool_db_port = os.getenv('APP_PGPOOL_DB_PORT')
-    clusterless_db_port = os.getenv('APP_DB_CLUSTERLESS_PORT')
+    pgpool_db_port = os.getenv('APP_DB_PORT') or 5432 # default pgpool port configured on docker-compose.yml
+    clusterless_db_port = os.getenv('APP_DB_PORT') or 5436  # default clusterless-pg port configured on docker-compose.yml
 
     clusterized_conn = psycopg2.connect(
-        host=db_host,
+        host=clusterized_db_host,
         user=db_user,
         password=db_password,
         dbname=db_name,
@@ -73,7 +79,7 @@ if __name__ == '__main__':
     )
     
     clusterless_conn = psycopg2.connect(
-        host=db_host,
+        host=clusterless_db_host,
         user=db_user,
         password=db_password,
         dbname=db_name,

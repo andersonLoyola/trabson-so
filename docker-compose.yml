@@ -72,6 +72,7 @@ services:
     volumes:
       - ./config:/config
       - ./database:/database
+      - ./application:/application
     entrypoint: ./database/init.sh
     networks:
       - cluster-network

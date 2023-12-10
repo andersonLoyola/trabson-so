@@ -8,9 +8,10 @@ load_dotenv(
 )
 
 # Get the database connection details from environment variables
-db_host = os.environ.get('APP_DB_HOST')
-pgpool_db_port = os.environ.get('APP_PGPOOL_DB_PORT')
-clusterless_db_port = os.environ.get('APP_DB_CLUSTERLESS_PORT')
+clusterized_db_host = os.environ.get('APP_CLUSTERIZED_DB_HOST') or 'localhost'
+clusterless_db_host = os.environ.get('APP_CLUSTERLESS_DB_HOST') or 'localhost'	
+pgpool_db_port = os.getenv('APP_DB_PORT') or 5432 # default pgpool port configured on docker-compose.yml
+clusterless_db_port = os.getenv('APP_DB_PORT') or 5436  # default clusterless-pg port configured on docker-compose.yml
 db_name = os.environ.get('APP_DB_NAME')
 db_user = os.environ.get('APP_DB_USER')
 db_password = os.environ.get('APP_DB_PASSWORD')
@@ -19,7 +20,7 @@ db_password = os.environ.get('APP_DB_PASSWORD')
 try: 
     # Connect to the clusterized databases using pgpool
     clusterized_conn = psycopg2.connect(
-        host=db_host,
+        host=clusterized_db_host,
         port=pgpool_db_port,
         dbname=db_name,
         user=db_user,
@@ -27,7 +28,7 @@ try:
     )
     # Connect to the clusterless databases 
     clusterless_conn = psycopg2.connect(
-        host=db_host,
+        host=clusterless_db_host,
         port=clusterless_db_port,
         dbname=db_name,
         user=db_user,

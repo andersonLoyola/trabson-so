@@ -5,13 +5,13 @@ from helpers import setup
 
 def execute(conn, clusterized_conn):
     print(
-        """
-        ------------------------------------
-        | Executing use case 08            |
-        ------------------------------------
-        Tunning scenario 03: Max connection = 4, shared buffers = 2048mb, effective_cache_size = 6gb  
-        indexes for all used tables enabled
-        """
+    """
+    ------------------------------------
+    | Executing use case 08            |
+    ------------------------------------
+    Tunning scenario 03: Max connection = 4, shared buffers = 2048mb, effective_cache_size = 6gb  
+    indexes for all used tables enabled
+    """
     )
     setup.create_indexes_scenario(conn)
     setup.create_tunning_scenario_03(conn)

@@ -2,10 +2,12 @@
 echo "Installing dependencies..."
 pip install psycopg2
 pip install python-dotenv
+pip install matplotlib
 pip install pandas
 echo "Dependencies installed!"
 echo "loading environment host variables..."	
 export APP_CLUSTERIZED_DB_HOST=pgpool
+export APP_CLUSTER_01_DB_HOST=cluster-01
 export APP_CLUSTERLESS_DB_HOST=clusterless-pg
 export APP_DB_PORT=5432
 echo "initializing database..."

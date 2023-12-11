@@ -1,32 +1,9 @@
-def tune(conn):
-    cursor = conn.cursor()
-    tunning_stmts = [
-        "ALTER SYSTEM SET shared_buffers = '2048MB';",
-		"ALTER SYSTEM SET effective_cache_size = '6GB';",
-    ]
-    print('Tunning database...')
-    for stmt in tunning_stmts:
-        print(f'Executing: {stmt}')
-        cursor.execute(stmt)
-    print('Tunning completed')
-
-
-def untune(conn):
-    cursor = conn.cursor()
-    tunning_stmts = [
-        "ALTER SYSTEM RESET shared_buffers;",
-        "ALTER SYSTEM RESET effective_cache_size;",
-    ]
-    print('Untunning database...')
-    for stmt in tunning_stmts:
-        print(f'Executing: {stmt}')
-        cursor.execute(stmt)
-    
-    print('Untunning completed')
 
 # indexes scenarios
 def create_indexes_scenario(conn):
     cursor = conn.cursor()
+    cursor.execute("BEGIN TRANSACTION;")
+    cursor.execute("SET TRANSACTION READ WRITE;")
     database_indexes_stmts = [
         "CREATE INDEX idx_docmicilio_comodos ON tb_domicilio(qtd_comodos_domic_fam);",
         "CREATE INDEX idx_pessoa_sexo ON tb_pessoa (cod_sexo_pessoa);",
@@ -45,10 +22,15 @@ def create_indexes_scenario(conn):
     ]
     for stmt in database_indexes_stmts:
         cursor.execute(stmt)
+    cursor.execute("COMMIT TRANSACTION;")
+    # Commit the changes and close the connection
+    conn.commit()
     cursor.close()
 
 def drop_all_indexes(conn):
     cur = conn.cursor()
+    cur.execute("BEGIN TRANSACTION;")
+    cur.execute("SET TRANSACTION READ WRITE;")
     drop_indexes_stmts = [
         "DROP INDEX IF EXISTS idx_docmicilio_comodos;",
         "DROP INDEX IF EXISTS idx_domicilio_comodos;",
@@ -69,12 +51,12 @@ def drop_all_indexes(conn):
     # Execute the DROP INDEX commands
     for stmt in drop_indexes_stmts:
         cur.execute(stmt)
-
+    cur.execute("COMMIT TRANSACTION;")
     # Commit the changes and close the connection
+    conn.commit()
     cur.close()
 
 def create_tunning_scenario_01(conn): 
-    
     cursor = conn.cursor()
     database_config_stmts = [
         "ALTER SYSTEM SET max_connections = 4",

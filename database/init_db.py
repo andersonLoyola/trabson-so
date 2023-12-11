@@ -7,12 +7,14 @@ def get_full_path(file_name):
 
 def load_schema(conn, schema_file):
     cursor =  conn.cursor()
+    cursor.execute("BEGIN")
+    cursor.execute("SET TRANSACTION READ WRITE")
     with open(schema_file, 'r') as f:
         print('Creating schema...' + schema_file)
         cursor.execute(f.read())
         print(f'Schema {schema_file} created.')
-    cursor.close()
     conn.commit()
+    cursor.close()
 
 def table_exists(conn, table_name):
     cursor = conn.cursor()
@@ -21,6 +23,7 @@ def table_exists(conn, table_name):
         (table_name,)
     )
     exists = cursor.fetchone()[0]
+    conn.commit()
     cursor.close()
     return exists
         
@@ -28,27 +31,24 @@ def init_clustered_db(conn, schema_tables_name):
     print('loading tables for clustered dbs ...')	
     for schema_file in schema_tables_name:
         table_name = schema_file.split('.')[0]
-        if (table_exists(conn, table_name)):
+        if (not table_exists(conn, table_name)):
+            load_schema(clusterless_conn, get_full_path('tables/' + schema_file))
+            print(f'loading data for {table_name}...')	
+            load_schema(clusterless_conn, get_full_path('data/' + schema_file))
+        else:     
             print(f'Table {table_name} already exists - Skipping clustered db initialization.')
-            continue
-        load_schema(conn, get_full_path('tables/' + schema_file))
-    print('loading data ...')	
-    for schema_file in schema_tables_name:
-        load_schema(conn, get_full_path('data/' + schema_file))
 
 
 def init_clusterless_db(conn, schema_tables_name):
     print('loading tables for clusterless dbs ...')	
     for schema_file in schema_tables_name:
         table_name = schema_file.split('.')[0]
-        if (table_exists(conn, table_name)):
+        if (not table_exists(conn, table_name)):
+            load_schema(clusterless_conn, get_full_path('tables/' + schema_file))
+            print(f'loading data for {table_name}...')	
+            load_schema(clusterless_conn, get_full_path('data/' + schema_file))
+        else:
             print(f'Table {table_name} already exists - Skipping clustered db initialization.')
-            continue
-        load_schema(clusterless_conn, get_full_path('tables/' + schema_file))
-    print('loading data ...')	
-    for schema_file in schema_tables_name:
-        load_schema(clusterless_conn, get_full_path('data/' + schema_file))
-
 
 if __name__ == '__main__':
     load_dotenv(dotenv_path=get_full_path('../config/app-database.config.env'))

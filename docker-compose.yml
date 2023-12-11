@@ -1,4 +1,5 @@
-version: '3'
+version: '3.6'
+
 services:
   clusterless-pg:
     image: bitnami/postgresql:latest
@@ -7,9 +8,11 @@ services:
       - 5436:5432
     volumes:
       - ./clusterless_pg_data:/bitnami/postgresql
-    build: 
-      context: .
-      shm_size: '1gb'
+    shm_size: '1024mb'
+    deploy: 
+      resources: 
+        limits: 
+          memory: '4gb'
     env_file:
       - ./config/clusterless.config.env
     networks:
@@ -21,9 +24,11 @@ services:
       - 5430:5432
     volumes:
       - ./cluster_01_data:/bitnami/postgresql
-    build: 
-      context: .
-      shm_size: '1gb'
+    shm_size: '1024mb'
+    deploy: 
+      resources: 
+        limits: 
+          memory: '4gb'
     env_file:
       - ./config/cluster-01.config.env
     networks:
@@ -35,9 +40,11 @@ services:
       - 5431:5432
     volumes:
       - ./cluster_02_data:/bitnami/postgresql
-    build:
-      context: .
-      shm_size: '1gb'
+    shm_size: '1024mb'
+    deploy: 
+      resources: 
+        limits: 
+          memory: '4gb'
     env_file:
       - ./config/cluster-02.config.env
     networks:

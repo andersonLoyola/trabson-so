@@ -54,7 +54,7 @@ def write_csv(results, file_path = 'report'):
 
 def plot_graph(results, filename): 
     df = pd.DataFrame(results)
-    plt.figure(figsize=(200,100))
+    plt.figure(figsize=(len(df)*1, 200))
     # Convert 'average' and 'standard_deviation' to float and round to 6 decimal places
     df['execution_time'] = df['average'].astype(float).round(6)
     df['std_dev'] = df['standard_deviation'].astype(float).round(6)
@@ -65,8 +65,8 @@ def plot_graph(results, filename):
         y='execution_time', 
         color='blue',
         label='Mean',
-        capsize=5, 
-        rot=0
+        rot=0,
+        figsize=(10, 14)
     )
     # Overlay a bar plot for the standard deviation
     df.plot(
@@ -75,13 +75,15 @@ def plot_graph(results, filename):
         y='std_dev', 
         color='red',
         label='Standard Deviation',
-        capsize=5, 
         rot=0,
-        ax=plt.gca()  # Use the same axes for the second plot
+        ax=plt.gca(), # Use the same axes for the second plot
+        figsize=(18, 24)
     )
     plt.xlabel('Time (ms)')
     plt.ylabel('query id')
+
     plt.title('Average Execution time and Standard Deviation for each query')
     plt.legend()
+    # Adjust the padding of the y-axis labels
     plt.savefig(filename, format='png')
     plt.close()

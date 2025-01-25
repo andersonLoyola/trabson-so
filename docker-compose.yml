@@ -1,0 +1,91 @@
+version: '3.6'
+
+services:
+  clusterless-pg:
+    image: bitnami/postgresql:latest
+    container_name: clusterless-pg
+    ports:
+      - 5436:5432
+    volumes:
+      - ./clusterless_pg_data:/bitnami/postgresql
+    shm_size: '1024mb'
+    deploy: 
+      resources: 
+        limits: 
+          memory: '4gb'
+    env_file:
+      - ./config/clusterless.config.env
+    networks:
+      - clusterless-network
+  cluster-01:
+    image: bitnami/postgresql-repmgr:latest
+    container_name: cluster-01
+    ports:
+      - 5430:5432
+    volumes:
+      - ./cluster_01_data:/bitnami/postgresql
+    shm_size: '1024mb'
+    deploy: 
+      resources: 
+        limits: 
+          memory: '4gb'
+    env_file:
+      - ./config/cluster-01.config.env
+    networks:
+      - cluster-network
+  cluster-02:
+    image: bitnami/postgresql-repmgr:latest
+    container_name: cluster-02
+    ports:
+      - 5431:5432
+    volumes:
+      - ./cluster_02_data:/bitnami/postgresql
+    shm_size: '1024mb'
+    deploy: 
+      resources: 
+        limits: 
+          memory: '4gb'
+    env_file:
+      - ./config/cluster-02.config.env
+    networks:
+      - cluster-network
+  pgpool:
+    image: bitnami/pgpool:4
+    container_name: pgpool
+    ports:
+      - 5432:5432
+    env_file:
+      - ./config/pgpool.config.env
+    volumes:
+      - ./cluster_pgpool_data:/bitnami/postgresql
+    depends_on:
+      - cluster-01
+      - cluster-02
+    networks:
+      - cluster-network
+    healthcheck:
+      test: ["CMD", "/opt/bitnami/scripts/pgpool/healthcheck.sh"]
+      interval: 10s
+      timeout: 5s
+      retries: 10
+  application:
+    image: python:3.8.5
+    container_name: application
+    ports:
+      - 8000:8000
+    depends_on:
+      - pgpool
+      - clusterless-pg
+    volumes:
+      - ./config:/config
+      - ./database:/database
+      - ./application:/application
+    entrypoint: ./database/init.sh
+    networks:
+      - cluster-network
+      - clusterless-network
+networks:
+  cluster-network:
+    driver: bridge
+  clusterless-network:
+    driver: bridge

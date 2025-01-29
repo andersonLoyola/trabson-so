@@ -1,22 +1,4 @@
-version: '3.6'
-
 services:
-  clusterless-pg:
-    image: bitnami/postgresql:latest
-    container_name: clusterless-pg
-    ports:
-      - 5436:5432
-    volumes:
-      - ./clusterless_pg_data:/bitnami/postgresql
-    shm_size: '1024mb'
-    deploy: 
-      resources: 
-        limits: 
-          memory: '4gb'
-    env_file:
-      - ./config/clusterless.config.env
-    networks:
-      - clusterless-network
   cluster-01:
     image: bitnami/postgresql-repmgr:latest
     container_name: cluster-01
@@ -68,24 +50,18 @@ services:
       interval: 10s
       timeout: 5s
       retries: 10
-  application:
-    image: python:3.8.5
-    container_name: application
+  pgadmin:
+    image: dpage/pgadmin4:latest
+    container_name: pgadmin
     ports:
-      - 8000:8000
+      - 80:80
+    environment:
+      PGADMIN_DEFAULT_EMAIL: admin@example.com
+      PGADMIN_DEFAULT_PASSWORD: admin
     depends_on:
       - pgpool
-      - clusterless-pg
-    volumes:
-      - ./config:/config
-      - ./database:/database
-      - ./application:/application
-    entrypoint: ./database/init.sh
     networks:
       - cluster-network
-      - clusterless-network
 networks:
   cluster-network:
-    driver: bridge
-  clusterless-network:
     driver: bridge

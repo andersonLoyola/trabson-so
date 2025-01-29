@@ -161,3 +161,6 @@ scenario*
 #  option (not recommended) you can uncomment the following to ignore the entire idea folder.
 #.idea/
 pg_*
+
+cluster_01_data/*
+cluster_02_data/*

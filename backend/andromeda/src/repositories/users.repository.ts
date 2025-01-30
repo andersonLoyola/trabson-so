@@ -1,5 +1,7 @@
+import { Injectable } from "@nestjs/common";
 import { PrismaService } from "../services/prisma.service";
 
+@Injectable()
 export class UsersRepository {
     constructor(
         private readonly databaseService: PrismaService
@@ -14,7 +16,7 @@ export class UsersRepository {
         })
     }
 
-    async getUser(username: string) {
+    async findByUsername(username: string) {
         return this.databaseService.users.findFirst({
             where: {
                 username: {

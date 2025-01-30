@@ -26,6 +26,7 @@ model TodoLists {
   created_at DateTime   @default(now())
   userId     String
   owner      Users      @relation(fields: [userId], references: [id])
+  description String
   status     Status     @default(PENDING)
   TodoItem   TodoItem[]
 }
@@ -34,6 +35,7 @@ model TodoItem {
   id         String    @id @default(uuid())
   title      String
   created_at DateTime  @default(now())
+  Description String
   listId     String
   list       TodoLists @relation(fields: [listId], references: [id])
   status     Status    @default(PENDING)

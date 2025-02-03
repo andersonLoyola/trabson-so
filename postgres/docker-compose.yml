@@ -1,0 +1,55 @@
+services:
+    primary-node:
+        build: ./primary-node
+        container_name: primary-node
+        environment:
+            - DB_REP_USER=lucky
+            - DB_REP_PASS=luciano
+            - POSTGRES_PASSWORD=secret
+        networks:
+            - database-network
+    replica-node:
+        build: ./replica-node
+        container_name: replica-node
+        environment:
+            - PRIMARY_DB_HOST=primary-node
+            - PRIMARY_DB_PORT=5432
+            - PRIMARY_DB_REP_USER=lucky
+            - PRIMARY_DB_REP_USER_PASS=luciano
+            - POSTGRES_PASSWORD=secret
+        networks:
+            - database-network
+        depends_on:
+            - primary-node
+
+    pgpool:
+        build: ./pgpool
+        container_name: pgpool
+        networks:
+            - database-network
+        depends_on:
+            - primary-node
+            - replica-node
+        environment:
+            - PRIMARY_NODE_HOST=primary-node
+            - PRIMARY_NODE_PORT=5432
+        ports:
+            - 5432:5432
+    db-load-balancer:
+        build: ./nginx
+        container_name: db-load-balancer
+        networks:
+            - database-network
+        ports:
+            - "15432:5432"
+        depends_on:
+            - primary-node
+            - replica-node
+            - pgpool
+networks:
+    database-network:
+        driver: bridge
+        ipam:
+            config:
+                - subnet: 172.16.238.0/24
+   

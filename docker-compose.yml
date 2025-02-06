@@ -1,67 +1,82 @@
 services:
-  cluster-01:
-    image: bitnami/postgresql-repmgr:latest
-    container_name: cluster-01
-    ports:
-      - 5430:5432
-    volumes:
-      - ./cluster_01_data:/bitnami/postgresql
-    shm_size: '1024mb'
-    deploy: 
-      resources: 
-        limits: 
-          memory: '4gb'
-    env_file:
-      - ./config/cluster-01.config.env
-    networks:
-      - cluster-network
-  cluster-02:
-    image: bitnami/postgresql-repmgr:latest
-    container_name: cluster-02
-    ports:
-      - 5431:5432
-    volumes:
-      - ./cluster_02_data:/bitnami/postgresql
-    shm_size: '1024mb'
-    deploy: 
-      resources: 
-        limits: 
-          memory: '4gb'
-    env_file:
-      - ./config/cluster-02.config.env
-    networks:
-      - cluster-network
-  pgpool:
-    image: bitnami/pgpool:4
-    container_name: pgpool
-    ports:
-      - 5432:5432
-    env_file:
-      - ./config/pgpool.config.env
-    volumes:
-      - ./cluster_pgpool_data:/bitnami/postgresql
-    depends_on:
-      - cluster-01
-      - cluster-02
-    networks:
-      - cluster-network
-    healthcheck:
-      test: ["CMD", "/opt/bitnami/scripts/pgpool/healthcheck.sh"]
-      interval: 10s
-      timeout: 5s
-      retries: 10
-  pgadmin:
-    image: dpage/pgadmin4:latest
-    container_name: pgadmin
-    ports:
-      - 80:80
-    environment:
-      PGADMIN_DEFAULT_EMAIL: admin@example.com
-      PGADMIN_DEFAULT_PASSWORD: admin
-    depends_on:
-      - pgpool
-    networks:
-      - cluster-network
+    app:
+        build: ./app
+        container_name: app
+        networks:
+            - database-network
+    primary-node-01:
+        build: ./postgres/primary-node-01
+        container_name: primary-node-01
+        environment:
+            - DB_REP_USER=lucky
+            - DB_REP_PASS=luciano
+            - POSTGRES_PASSWORD=secret
+            - PRIMARY_NODE_HOST_01=primary-node-01
+        networks:
+            - database-network
+    # primary-node-02:
+    #     build: ./postgres/primary-node-02
+    #     container_name: primary-node-02
+    #     environment:
+    #         - DB_REP_USER=lucky
+    #         - DB_REP_PASS=luciano
+    #         - POSTGRES_PASSWORD=secret
+    #     networks:
+    #         - database-network
+    replica-node-01:
+        build: ./postgres/replica-node
+        container_name: replica-node
+        environment:
+            - PRIMARY_DB_HOST=primary-node-01
+            - PRIMARY_DB_PORT=5432
+            - PRIMARY_DB_REP_USER=lucky
+            - PRIMARY_DB_REP_USER_PASS=luciano
+            - POSTGRES_PASSWORD=secret
+        networks:
+            - database-network
+        depends_on:
+            - primary-node-01
+    pgpool:
+        build: ./postgres/pgpool
+        container_name: pgpool
+        networks:
+            - database-network
+        depends_on:
+            - primary-node-01
+            - replica-node-01
+        environment:
+            - PRIMARY_NODE_HOST=primary-node-01
+            - PRIMARY_NODE_PORT=5432
+            - DB_APP_USER=lucy
+            - DB_APP_PASSWORD=steel
+            - DATABASE_APP_NAME=andromeda_db
+        ports:
+            - 9898:9898
+    nginx:
+        build: ./nginx
+        container_name: db-load-balancer
+        networks:
+            - database-network
+        ports:
+            - "15432:5432"
+        depends_on:
+            - pgpool
+    pgadmin:
+        image: dpage/pgadmin4:latest
+        container_name: pgadmin
+        ports:
+        - 80:80
+        environment:
+            - PGADMIN_DEFAULT_EMAIL=admin@example.com
+            - PGADMIN_DEFAULT_PASSWORD=admin
+        depends_on:
+        - pgpool
+        networks:
+           - database-network
 networks:
-  cluster-network:
-    driver: bridge
+    database-network:
+        driver: bridge
+        ipam:
+            config:
+                - subnet: 172.16.238.0/24
+   

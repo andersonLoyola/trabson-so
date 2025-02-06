@@ -10,9 +10,9 @@ check_retry_count () {
      exit 3
   fi
 }
-
-db_host_names=(primary-node replica-node)
-for str in ${db_host_names[*]}; do
+db_host_names=(primary-node-01 replica-node-01)
+for str in ${db_host_names[*]}; 
+do
   RETRY_COUNT=0
   until nc -z $str 5432; do
     check_retry_count $RETRY_COUNT $str
